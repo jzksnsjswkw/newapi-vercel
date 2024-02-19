@@ -1,6 +1,7 @@
 package api
 
 import (
+	"io"
 	"net/http"
 	"strings"
 
@@ -33,7 +34,10 @@ func init() {
 			return
 		}
 		defer resp.Body.Close()
-		ctx.DataFromReader(resp.StatusCode, resp.ContentLength, resp.Header.Get("Content-Type"), resp.Body, nil)
+		ctx.Stream(func(w io.Writer) bool {
+			_, err := io.Copy(w, resp.Body)
+			return err == nil
+		})
 	})
 }
 
