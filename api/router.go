@@ -35,8 +35,8 @@ func init() {
 		}
 		defer resp.Body.Close()
 		ctx.Stream(func(w io.Writer) bool {
-			_, err := io.Copy(w, resp.Body)
-			return err == nil
+			i, err := io.Copy(w, resp.Body)
+			return i == 0 || err != nil
 		})
 	})
 }
